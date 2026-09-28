@@ -3,14 +3,14 @@ import os
 
 import pytest
 
-from pcg_scatter import model
-from pcg_scatter.backends import BuildReport, LandscapeInfo, OfflineBackend
-from pcg_scatter.model import Bounds, FlatMask, MeshEntry, SurfaceMode
+import pcg_scatter_tool as model
+from pcg_scatter_tool import BuildReport, LandscapeInfo, OfflineBackend
+from pcg_scatter_tool import Bounds, FlatMask, MeshEntry, SurfaceMode
 
-qt_compat = pytest.importorskip("pcg_scatter.qt_compat")
+qt_compat = pytest.importorskip("pcg_scatter_tool")
 QtWidgets = qt_compat.QtWidgets
 
-from pcg_scatter import ui  # noqa: E402
+import pcg_scatter_tool as ui  # noqa: E402
 
 LANDSCAPE = "/Game/Maps/Island.Island:PersistentLevel.Landscape_0"
 PINES = ["/Game/Env/SM_Pine_A.SM_Pine_A", "/Game/Env/SM_Pine_B.SM_Pine_B"]
@@ -224,3 +224,31 @@ def test_diagnostics_and_painting(window):
         window.layer_list.setCurrentRow(row)
         assert not window.editor.slope_bar.grab().isNull()
     assert not window.grab().isNull()
+
+
+def test_running_the_file_in_unreal_opens_the_window(app, tmp_path):
+    """What `py "pcg_scatter_tool.py"` does in the editor: run the file as __main__ with `unreal` present."""
+    import runpy
+    import sys
+
+    import fake_unreal
+
+    fake_unreal.reset(saved_dir=str(tmp_path))
+    fake_unreal.make_world()
+    sys.modules.pop("_pcg_scatter_tool_state", None)
+    try:
+        runpy.run_path(ui.__file__, run_name="__main__")
+        state = sys.modules["_pcg_scatter_tool_state"]
+        first = state.window
+        assert first.isVisible() and first.backend.available
+        assert first.landscape_combo.currentText() == "Landscape"
+        assert any(level == "parented" for level, _ in fake_unreal.logs)
+        assert len(fake_unreal.tick_callbacks) == 1
+        fake_unreal.tick_callbacks[0](0.016)  # lets Qt process its events
+
+        runpy.run_path(ui.__file__, run_name="__main__")  # running it again replaces the window
+        assert state.window is not first and not first.isVisible()
+        assert len(fake_unreal.tick_callbacks) == 1
+        state.window.close()
+    finally:
+        sys.modules.pop("_pcg_scatter_tool_state", None)

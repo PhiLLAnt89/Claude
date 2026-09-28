@@ -2,7 +2,7 @@ import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(os.path.dirname(HERE), "Content", "Python"))
+sys.path.insert(0, os.path.dirname(HERE))  # pcg_scatter_tool.py
 sys.path.insert(0, HERE)
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 

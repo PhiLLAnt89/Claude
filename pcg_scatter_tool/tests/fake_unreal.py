@@ -26,10 +26,11 @@ _subsystems = {}
 _selected_assets = []
 _counter = itertools.count()
 logs = []
+tick_callbacks = []
 
 
 def reset(**options):
-    for store in (_registry, _selected_assets, logs):
+    for store in (_registry, _selected_assets, logs, tick_callbacks):
         store.clear()
     for store in (_assets, _metadata, _subsystems):
         store.clear()
@@ -699,6 +700,15 @@ class EditorDialog:
     @staticmethod
     def show_message(title, message, message_type):
         logs.append(("dialog", message))
+
+
+def register_slate_post_tick_callback(callback):
+    tick_callbacks.append(callback)
+    return len(tick_callbacks)
+
+
+def parent_external_window_to_slate(external_window, parent_search_method=None):
+    logs.append(("parented", int(external_window)))
 
 
 def log(message):

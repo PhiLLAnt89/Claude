@@ -2,8 +2,8 @@ import math
 
 import pytest
 
-from pcg_scatter import model
-from pcg_scatter.model import FlatMask, MeshEntry, ScatterLayer, SurfaceMode
+import pcg_scatter_tool as model
+from pcg_scatter_tool import FlatMask, MeshEntry, ScatterLayer, SurfaceMode
 
 
 def layer(**kwargs):

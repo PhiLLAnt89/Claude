@@ -1,6 +1,6 @@
-from pcg_scatter import model
-from pcg_scatter import plan as planlib
-from pcg_scatter.model import FlatMask, MeshEntry, SurfaceMode
+import pcg_scatter_tool as model
+import pcg_scatter_tool as planlib
+from pcg_scatter_tool import FlatMask, MeshEntry, SurfaceMode
 
 
 def ready_settings():

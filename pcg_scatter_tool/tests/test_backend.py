@@ -3,9 +3,9 @@ import math
 import pytest
 
 import fake_unreal as ue
-from pcg_scatter import model
-from pcg_scatter import unreal_backend
-from pcg_scatter.model import MeshEntry
+import pcg_scatter_tool as model
+import pcg_scatter_tool as unreal_backend
+from pcg_scatter_tool import MeshEntry
 
 GRAPH = "/Game/PCG/PCG_Scatter"
 SOURCES = (ue.PCGGetLandscapeSettings, ue.PCGWorldRayHitSettings, ue.PCGCreatePointsSettings, ue.PCGDataFromActorSettings)

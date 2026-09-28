@@ -1,9 +1,9 @@
 # PCG Scatter Tool for Unreal Engine 5.6
 
-A Python editor tool with a Qt window (PySide6 or PyQt6). It builds a PCG graph from lists of static
-meshes and fills a landscape with them, both on the landscape itself and on top of kitbash meshes
-placed on it. You control slope, flat areas, height, paint layers, patches, spacing, scale, rotation and
-culling per layer.
+One Python file, `pcg_scatter_tool.py`, with a Qt window (PySide6 or PyQt6). It builds a PCG graph from
+lists of static meshes and fills a landscape with them, both on the landscape itself and on top of
+kitbash meshes placed on it. You control slope, flat areas, height, paint layers, patches, spacing,
+scale, rotation and culling per layer.
 
 ![The tool window](docs/ui_masks.png)
 
@@ -35,23 +35,21 @@ of it), assigns the graph and generates.
 
 ## Install
 
-1. Copy `Content/Python/pcg_scatter` into `<YourProject>/Content/Python/`. For a Tools menu entry, also
-   copy `Content/Python/init_unreal.py`. If your project already has one, paste its lines into yours.
+1. Put `pcg_scatter_tool.py` anywhere, for example `D:/Tools/pcg_scatter_tool.py`.
 2. Close the editor and install PySide6 into your project using Unreal's own Python (adjust both paths):
 
    ```bat
    "C:\Program Files\Epic Games\UE_5.6\Engine\Binaries\ThirdParty\Python3\Win64\python.exe" -m pip install --target "D:\MyProject\Content\Python\Lib\site-packages" PySide6
    ```
 
-   The tool adds that folder to Python's path when it opens.
-3. Start the editor and open **Tools > PCG Scatter Tool**. Or, in the Output Log, switch the input box from
-   Cmd to Python and run:
+   The tool adds that folder to Python's path itself.
+3. Start the editor. In the Output Log, set the input box to **Cmd** and run:
 
-   ```python
-   import pcg_scatter; pcg_scatter.launch()
+   ```
+   py "D:/Tools/pcg_scatter_tool.py"
    ```
 
-   After updating the tool's files, `pcg_scatter.launch(reload=True)` picks up the changes without a restart.
+   Running it again closes the old window and opens a fresh one, which also picks up an updated file.
 
 ## First run: check the PCG API
 
@@ -112,7 +110,7 @@ and logs which node classes, properties and pins worked. If a line says FAILED, 
 - **Heavy layers:** above about 3 million candidate points, lower the density or tick *Partitioned*.
 - **Presets** are JSON files (Load/Save preset). The last session is saved to
   `<YourProject>/Saved/PCGScatterTool/last_session.json` and reopens with the tool.
-- **Outside Unreal**, `python -m pcg_scatter` (run from `Content/Python`) opens the window for editing presets.
+- **Outside Unreal**, `python pcg_scatter_tool.py` opens the window for editing presets.
 
 ## Known limits
 
@@ -133,8 +131,8 @@ first. Set the environment variable `PCG_SCATTER_QT=PyQt6` to force PyQt6.
 
 ## Development
 
-The tests run outside Unreal with a stand-in for the `unreal` module (`tests/fake_unreal.py`). It checks
-the tool's logic, not Unreal's real API.
+The tests (not needed to use the tool) run outside Unreal with a stand-in for the `unreal` module
+(`tests/fake_unreal.py`). They check the tool's logic, not Unreal's real API.
 
 ```bash
 pip install pytest PySide6 PyQt6
