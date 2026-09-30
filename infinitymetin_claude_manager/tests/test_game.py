@@ -224,7 +224,9 @@ def test_claude_backend_runs_tasks_and_resumes_sessions(tmp_path, monkeypatch):
     assert len(calls) == 2
     import json
     first, second = json.loads(calls[0]), json.loads(calls[1])
-    assert first["cwd"] == str(project) and not first["stdin_tty"]
+    assert first["cwd"] == str(project)
+    if os.name != "nt":  # on Windows the NUL device reports itself as a terminal
+        assert not first["stdin_tty"]
     assert "-p" in first["args"] and "stream-json" in first["args"] and "--append-system-prompt" in first["args"]
     assert first["args"][first["args"].index("--permission-mode") + 1] == "acceptEdits"
     assert first["args"][first["args"].index("--allowedTools") + 1] == "Read,Edit"

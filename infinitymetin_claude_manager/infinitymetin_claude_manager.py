@@ -1065,6 +1065,10 @@ class ClaudeBackend:
         job.cancel.set()
         process = job.process
         if process and process.poll() is None:
+            if os.name == "nt":
+                # claude.cmd starts node as a child; kill the whole tree or it keeps running
+                subprocess.run(["taskkill", "/F", "/T", "/PID", str(process.pid)], capture_output=True,
+                               creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
             try:
                 process.kill()
             except OSError:
